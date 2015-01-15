@@ -7,22 +7,17 @@ import javax.imageio.ImageIO
 
 object MoonPhases extends App with Logger {
   Log debug f"Arguments: ${args}"
-  args.length match {
-    case 1 =>
-      (0 until 30).foreach { phase =>
-        val target = {
-          val value = f"0${phase}".takeRight(2)
-          val filename = f"phase-${value}.png"
-          Paths.get(args(0), filename)
-        }
-        save(makeImage(phase), target)
+  args.toList match {
+    case target :: phase :: Nil => save(makeImage(phase.toInt), Paths get target)
+    case dir :: Nil => (0 until 30).foreach { phase =>
+      val target = {
+        val value = f"0${phase}".takeRight(2)
+        val filename = f"phase-${value}.png"
+        Paths.get(dir, filename)
       }
-    case 2 =>
-      val target = Paths get args(0)
-      val phase = args(1).toInt
       save(makeImage(phase), target)
-    case _ =>
-      Log fatal "Artguments are miss match"
+    }
+    case _ => Log fatal "Artguments are miss match"
   }
 
   def save(image: BufferedImage, file: Path) {
