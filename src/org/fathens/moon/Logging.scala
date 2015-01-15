@@ -1,6 +1,6 @@
 package org.fathens.moon
 
-object Logger {
+object Logging {
   val sf = new java.text.SimpleDateFormat("yyyy-MM-DD HH:mm:ss.SSS")
   def output(currentLevel: LogLevel.Value)(outLevel: LogLevel.Value)(msg: => Any) {
     if (outLevel <= currentLevel) {
@@ -18,23 +18,24 @@ object Logger {
   }
   def getLogLevel(clazz: Class[_], defaultLevel: LogLevel.Value) = {
     try {
-      val value = System.getProperty(f"${clazz.getCanonicalName}.logLevel")
-      LogLevel(Integer parseInt value)
+      val name = clazz.getCanonicalName.reverse.dropWhile(_ == '$').reverse
+      val value = System.getProperty(f"${name}.logLevel")
+      Console println f"Setting logLevel of ${name}(${clazz.getCanonicalName}) to ${value}"
+      LogLevel withName value
     } catch {
       case ex: Exception => defaultLevel
     }
   }
   val defaultLogLevel = getLogLevel(getClass, LogLevel.DEBUG)
-}
-trait Logger {
-  protected object Log {
-    import Logger._
-    val logLevel = getLogLevel(getClass, defaultLogLevel)
-
-    val debug = output(logLevel)(LogLevel.DEBUG)_
-    val trace = output(logLevel)(LogLevel.TRACE)_
-    val info = output(logLevel)(LogLevel.INFO)_
-    val warn = output(logLevel)(LogLevel.WARN)_
-    val fatal = output(logLevel)(LogLevel.FATAL)_
+  class Logger(clazz: Class[_]) {
+    val LOG_LEVEL = getLogLevel(clazz, defaultLogLevel)
+    val debug = output(LOG_LEVEL)(LogLevel.DEBUG)_
+    val trace = output(LOG_LEVEL)(LogLevel.TRACE)_
+    val info = output(LOG_LEVEL)(LogLevel.INFO)_
+    val warn = output(LOG_LEVEL)(LogLevel.WARN)_
+    val fatal = output(LOG_LEVEL)(LogLevel.FATAL)_
   }
+}
+trait Logging {
+  protected val Log = new Logging.Logger(getClass)
 }
