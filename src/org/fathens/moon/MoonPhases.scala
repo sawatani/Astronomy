@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
 
 object MoonPhases extends App with Logger {
-  Log debug f"Arguments: ${args}"
+  Log debug f"Arguments: ${args mkString ", "}"
   args.toList match {
     case target :: phase :: Nil => save(makeImage(phase.toInt), Paths get target)
     case dir :: Nil => (0 until 30).foreach { phase =>
@@ -27,6 +27,22 @@ object MoonPhases extends App with Logger {
   }
   def makeImage(phase: Int): BufferedImage = {
     assert(0 <= phase && phase < 30)
-    null
+    val r = 100
+    val on = SphereSilhouette.on(r)(30)(phase)_
+    val image = new BufferedImage(r * 2, r * 2, BufferedImage.TYPE_INT_ARGB)
+    val raster = image.getRaster
+    for {
+      y <- (-r until r)
+      x <- (-r until r)
+    } {
+      val rgba = on(x, y) match {
+        case None        => Array(0, 0, 0, 0)
+        case Some(false) => Array(0, 0, 0, 255)
+        case Some(true)  => Array(255, 255, 0, 255)
+      }
+      Log info f"Phase: ${phase}: Pixel(${x}, ${y}) = ${rgba mkString ", "}"
+      raster.setPixel(x + r, y + r, rgba)
+    }
+    image
   }
 }
