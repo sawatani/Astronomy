@@ -8,14 +8,14 @@ import javax.imageio.ImageIO
 object MoonPhases extends App with Logger {
   Log debug f"Arguments: ${args mkString ", "}"
   args.toList match {
-    case target :: phase :: Nil => save(makeImage(phase.toInt), Paths get target)
-    case dir :: Nil => (0 until 30).foreach { phase =>
+    case r :: target :: phase :: Nil => save(makeImage(r.toInt, phase.toInt), Paths get target)
+    case r :: dir :: Nil => (0 until 30).foreach { phase =>
       val target = {
         val value = f"0${phase}".takeRight(2)
         val filename = f"phase-${value}.png"
         Paths.get(dir, filename)
       }
-      save(makeImage(phase), target)
+      save(makeImage(r.toInt, phase), target)
     }
     case _ => Log fatal "Artguments are miss match"
   }
@@ -25,9 +25,8 @@ object MoonPhases extends App with Logger {
     val ext = if (name contains '.') name.reverse.takeWhile(_ != '.').reverse else "png"
     ImageIO.write(image, ext, file.toFile)
   }
-  def makeImage(phase: Int): BufferedImage = {
+  def makeImage(r: Int, phase: Int): BufferedImage = {
     assert(0 <= phase && phase < 30)
-    val r = 100
     val on = SphereSilhouette.on(r)(30)(phase)_
     val image = new BufferedImage(r * 2, r * 2, BufferedImage.TYPE_INT_ARGB)
     val raster = image.getRaster
