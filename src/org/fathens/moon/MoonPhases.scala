@@ -6,10 +6,11 @@ import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
 
 object MoonPhases extends App with Logging {
+  val max = 28
   Log warn f"Arguments: ${args mkString ", "}"
   args.toList match {
     case r :: target :: phase :: Nil => save(makeImage(r.toInt, phase.toInt), Paths get target)
-    case r :: dir :: Nil => (0 until 30).foreach { phase =>
+    case r :: dir :: Nil => (0 until max).foreach { phase =>
       val target = {
         val value = f"0${phase}".takeRight(2)
         val filename = f"phase-${value}.png"
@@ -24,11 +25,12 @@ object MoonPhases extends App with Logging {
     val name = file.getFileName.toFile.getName
     val ext = if (name contains '.') name.reverse.takeWhile(_ != '.').reverse else "png"
     Log info f"Writing image(${ext}) to ${file}"
+    file.getParent.toFile.mkdirs
     ImageIO.write(image, ext, file.toFile)
   }
   def makeImage(r: Int, phase: Int): BufferedImage = {
-    assert(0 <= phase && phase < 30)
-    val on = SphereSilhouette.on(r)(30)(phase)_
+    assert(0 <= phase && phase < max)
+    val on = SphereSilhouette.on(r)(max)(phase)_
     val image = new BufferedImage(r * 2, r * 2, BufferedImage.TYPE_INT_ARGB)
     val raster = image.getRaster
     for {
