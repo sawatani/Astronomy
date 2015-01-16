@@ -5,7 +5,7 @@ import java.nio.file.{Path, Paths}
 
 import javax.imageio.ImageIO
 
-object MoonPhases extends App with Logging {
+object MoonImage extends App with Logging {
   val max = 28
   Log warn f"Arguments: ${args mkString ", "}"
   args.toList match {
