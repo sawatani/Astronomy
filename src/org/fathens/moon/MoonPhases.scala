@@ -1,8 +1,8 @@
 package org.fathens.moon
 
-import java.nio.file.Paths
-import java.nio.file.Path
 import java.awt.image.BufferedImage
+import java.nio.file.{Path, Paths}
+
 import javax.imageio.ImageIO
 
 object MoonPhases extends App with Logging {
