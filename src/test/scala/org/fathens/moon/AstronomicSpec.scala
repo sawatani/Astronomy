@@ -5,6 +5,8 @@ import org.specs2.Specification
 object AstronomicSpec extends Specification {
   def is = s2"""
 
+  Epoch days                                     $ed01
+
   Kepler's equation
 
   Example of solutions (at 2015-01-01 - 2015-01-31)
@@ -41,6 +43,10 @@ object AstronomicSpec extends Specification {
     ex31                                         $ex31
   """
 
+  def ed01 = {
+    val date = Astronomic.Days.iso8601 parse "1980-01-01T00:00:00.000Z"
+    (Astronomic.Days from1980 date) must_== 1.5
+  }
   def kepler(x: Double, y: Double) = {
     Astronomic.kepler(x, Astronomic.eccentricity) must beCloseTo(y, 5e-6)
   }
