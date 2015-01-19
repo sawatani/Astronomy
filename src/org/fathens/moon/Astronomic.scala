@@ -86,14 +86,15 @@ object Astronomic {
    * Solve the equation of Kepler.
    */
   def kepler(m: Double, ecc: Double) = {
+    val initial = m.toRadians
     val epsilon = 1e-6
     @tailrec
     def solve(e: Double): Double = {
-      val delta = e - ecc * sin(e) - m.toRadians
+      val delta = e - ecc * sin(e) - initial
       val next = e - delta / (1.0 - ecc * cos(e))
       if (abs(delta) <= epsilon) next
       else solve(next)
     }
-    solve(m.toRadians)
+    solve(initial)
   }
 }
