@@ -9,15 +9,12 @@ object Astronomic {
   object Days {
     val parse = java.time.OffsetDateTime.parse(_: String)
     val jdn = java.time.temporal.JulianFields.JULIAN_DAY.getFrom(_: java.time.OffsetDateTime)
-    val at1980 = parse("1980-01-01T00:00:00.000+00:00")
+    val epoch = 2444238.5
     val iso8601 = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     /**
      * From 1980 January 0.0 in JDN
      */
-    def from1980(date: Date) = {
-      val to = parse(iso8601 format date)
-      jdn(to) - jdn(at1980)
-    }
+    def from1980(date: Date) = jdn(parse(iso8601 format date)) - epoch
   }
   /**
    * Ecliptic longitude of the Sun at epoch 1980.0
