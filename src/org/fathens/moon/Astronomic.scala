@@ -6,6 +6,19 @@ import scala.annotation.tailrec
 import scala.math._
 
 object Astronomic {
+  object Days {
+    val parse = java.time.OffsetDateTime.parse(_: String)
+    val jdn = java.time.temporal.JulianFields.JULIAN_DAY.getFrom(_: java.time.OffsetDateTime)
+    val at1980 = parse("1980-01-01T00:00:00.000+00:00")
+    val iso8601 = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    /**
+     * From 1980 January 0.0 in JDN
+     */
+    def from1980(date: Date) = {
+      val to = parse(iso8601 format date)
+      jdn(to) - jdn(at1980)
+    }
+  }
   /**
    * Ecliptic longitude of the Sun at epoch 1980.0
    */
@@ -37,6 +50,10 @@ object Astronomic {
    */
   val moon_mean_perigee_epoch = 349.383063
   /**
+   * Mean longitude of the node at the epoch
+   */
+  val node_mean_longitude_epoch = 151.950429
+  /**
    * Inclination of the Moon's orbit
    */
   val moon_inclination = 5.145396
@@ -64,32 +81,10 @@ object Astronomic {
    * Properties of the Earth
    */
   val earth_radius = 6378.16
-
-  object Days {
-    val parse = java.time.OffsetDateTime.parse(_: String)
-    val jdn = java.time.temporal.JulianFields.JULIAN_DAY.getFrom(_: java.time.OffsetDateTime)
-    val at1980 = parse("1980-01-01T00:00:00.000+00:00")
-    val iso8601 = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    /**
-     * From 1980 January 0.0 in JDN
-     */
-    def from1980(date: Date) = {
-      val to = parse(iso8601 format date)
-      jdn(to) - jdn(at1980)
-    }
-  }
   /**
    * Normalize degrees to (0 <= d < 360)
    */
   def fixangle(a: Double) = a - 360.0 * floor(a / 360.0)
-  /**
-   * Degrees to Radians
-   */
-  def torad(d: Double) = d * Pi / 180.0
-  /**
-   * Radians to Degrees
-   */
-  def todeg(r: Double) = r * 180.0 / Pi
   /**
    * Solve the equation of Kepler.
    */
@@ -97,11 +92,11 @@ object Astronomic {
     val epsilon = 1e-6
     @tailrec
     def solve(e: Double): Double = {
-      val delta = e - ecc * sin(e) - m
+      val delta = e - ecc * sin(e) - m.toRadians
       val next = e - delta / (1.0 - ecc * cos(e))
       if (abs(delta) <= epsilon) next
       else solve(next)
     }
-    solve(torad(m))
+    solve(m.toRadians)
   }
 }

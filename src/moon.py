@@ -214,11 +214,14 @@ def phase(phase_date=DateTime()):
 
     # Mean anomaly of the Sun
     N = fixangle((360/365.2422) * day)
+    print ("""N: %0.5f""" % (N))
     # Convert from perigee coordinates to epoch 1980
     M = fixangle(N + c.ecliptic_longitude_epoch - c.ecliptic_longitude_perigee)
+    print ("""day: %0.5f, M: %0.5f """ % (day, M))
 
     # Solve Kepler's equation
     Ec = kepler(M, c.eccentricity)
+    print ("""Kepler's equation(M: %0.5f, eccentricity: %0.5f)=%0.5f""" %(M, c.eccentricity, Ec))
     Ec = sqrt((1 + c.eccentricity) / (1 - c.eccentricity)) * tan(Ec/2.0)
     # True anomaly
     Ec = 2 * todeg(atan(Ec))
@@ -269,6 +272,7 @@ def phase(phase_date=DateTime()):
 
     # True longitude
     lPP = lP + variation
+    print ("""lPP=%.5f, lambda_sun=%.5f, Ec=%0.5f""" % (lPP, lambda_sun, Ec))
 
     #
     # Calculation of the Moon's inclination
@@ -295,6 +299,7 @@ def phase(phase_date=DateTime()):
 
     # Age of the Moon, in degrees
     moon_age = lPP - lambda_sun
+    print ("""moon_age: %0.5f""" % moon_age)
 
     # Phase of the Moon
     moon_phase = (1 - cos(torad(moon_age))) / 2.0
