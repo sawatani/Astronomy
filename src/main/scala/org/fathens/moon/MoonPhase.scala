@@ -5,7 +5,10 @@ import java.util.Date
 import scala.math._
 
 object MoonDemo extends App with Logging {
-  Log info f"Today: ${new MoonPhase(new Date)}"
+  args.map(Astronomic.Days.iso8601.parse).foreach { date =>
+    Log warn f"Start calculating: ======== ${Astronomic.Days.iso8601 format date} ========"
+    Log info f"${new MoonPhase(date)}"
+  }
 }
 object MoonPhase extends Logging {
   import Astronomic._
@@ -27,7 +30,7 @@ object MoonPhase extends Logging {
       private val Ec = {
         // Solve Kepler's equation
         val a = kepler(M, eccentricity)
-        Log debug f"Kepler's equation(M: ${M}, eccentricity: ${eccentricity})=${a} != 0.28345"
+        Log debug f"Kepler's equation(M: ${M}%3.5f, eccentricity: ${eccentricity})=${a}%3.5f"
         val b = sqrt((1 + eccentricity) / (1 - eccentricity)) * tan(a / 2.0)
         2 * atan(b).toDegrees
       }
@@ -135,8 +138,8 @@ class MoonPhase(date: Date) {
    * Moon's angular diameter
    */
   lazy val angularDiameter = moon_angular_size * moon_smaxis / distance
-  
+
   override def toString = {
-    f"MoonPhase(illuminated: ${illuminated * 100}%%, age: ${age})"
+    f"MoonPhase(illuminated: ${illuminated * 100}%3.5f%%, age: ${age}%02.1f)"
   }
 }
