@@ -81,7 +81,7 @@ object Astronomic {
   /**
    * Normalize degrees to (0 <= d < 360)
    */
-  def fixangle(a: Double) = a - 360.0 * floor(a / 360.0)
+  def fixangle(a: Double) = (360 + a % 360) % 360
   /**
    * Solve the equation of Kepler.
    */

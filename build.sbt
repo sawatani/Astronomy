@@ -14,6 +14,6 @@ scalacOptions ++= Seq(
 scalacOptions in Test ++= Seq("-Yrangepos")
 
 libraryDependencies ++= Seq(
-  "org.specs2" %% "specs2-core" % "2.4.15" % "test" withSources,
+  "org.specs2" %% "specs2-scalacheck" % "2.4.15" % "test" withSources,
   "org.scalaz" %% "scalaz-core" % "7.1.0" withSources
 )
