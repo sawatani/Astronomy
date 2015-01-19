@@ -27,7 +27,7 @@ the nearest full moon, new moon, etc.
 from math import sin, cos, floor, sqrt, pi, tan, atan # asin, atan2
 import bisect
 try:
-    import DateTime
+    from DateTime import DateTime
 except ImportError:
     from mx import DateTime
 
@@ -64,16 +64,13 @@ class MoonPhase:
         nextnew_date - the date of the next new moon
     """
 
-    def __init__(self, date=DateTime.now()):
+    def __init__(self, date=DateTime()):
         """MoonPhase constructor.
 
         Give me a date, as either a Julian Day Number or a DateTime
         object."""
 
-        if not isinstance(date, DateTime.DateTimeType):
-            self.date = DateTime.DateTimeFromJDN(date)
-        else:
-            self.date = date
+        self.date = date.JulianDay()
 
         self.__dict__.update(phase(self.date))
 
@@ -194,7 +191,7 @@ def phase_string(p):
     return phase_strings[i][1]
 
 
-def phase(phase_date=DateTime.now()):
+def phase(phase_date=DateTime()):
     """Calculate phase of moon as a fraction:
 
     The argument is the time for which the phase is requested,
@@ -327,7 +324,7 @@ def phase(phase_date=DateTime.now()):
 # phase()
 
 
-def phase_hunt(sdate=DateTime.now()):
+def phase_hunt(sdate=DateTime()):
     """Find time of phases of the moon which surround the current date.
 
     Five phases are found, starting and ending with the new moons
