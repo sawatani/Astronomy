@@ -7,10 +7,14 @@ import scala.math._
 
 object Astronomic {
   object Days {
-    val parse = java.time.OffsetDateTime.parse(_: String)
-    val jdn = java.time.temporal.JulianFields.JULIAN_DAY.getFrom(_: java.time.OffsetDateTime)
+    import java.time._
+    def parse(text: String) = OffsetDateTime.parse(text) withOffsetSameInstant ZoneOffset.UTC
+    def jdn(date: OffsetDateTime) = {
+      val days = temporal.JulianFields.JULIAN_DAY.getFrom(date)
+      days + temporal.ChronoField.SECOND_OF_DAY.getFrom(date).toDouble / (24 * 60 * 60)
+    }
     val epoch = 2444238.5
-    val iso8601 = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    def iso8601 = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     /**
      * From 1980 January 0.0 in JDN
      */

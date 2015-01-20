@@ -1,26 +1,33 @@
 package org.fathens.moon
 
-import org.specs2._
+import java.util.Date
 
-object AstronomicSpec extends Specification with matcher.DataTables {
+import org.scalacheck._
+
+object AstronomicSpec extends SpecificationExt {
   def is = s2"""
 
-  Epoch days                                        $ed01
+  Epoch days
+
+    1980-01-01 is 1.5                               $ed01
+    Considering hours                               $ed02
   
   Kepler's equation
 
   Example of solutions (at 2015-01-01 - 2015-01-31) $kepler
   """
 
-  implicit val precision = 5e-6
-  implicit class moreDouble(a: Double) {
-    def must_=~(b: Double)(implicit p: Double) = a must beCloseTo(b, p)
-  }
-  
+  implicit val precision = Precision(5e-6)
+
   def ed01 = {
     val date = Astronomic.Days.iso8601 parse "1980-01-01T00:00:00.000Z"
     (Astronomic.Days from1980 date) must_== 1.5
   }
+  def ed02 = Prop.forAll(genDate, Gen.choose(0, 24 * 60 * 60)) { (d1, seconds) =>
+    implicit val precision = Precision(5e-5)
+    val date = Astronomic.Days from1980 new Date(_: Long)
+    (date(d1.getTime + seconds * 1000) - date(d1.getTime)) * 24 * 60 * 60 must_=~ seconds
+  }.set(minTestsOk = 10000)
   def kepler =
     "x" | "y" |
       358.23110 ! 6.25179 |
