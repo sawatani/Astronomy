@@ -22,9 +22,9 @@ object MoonPhase extends Logging {
     // Convert from perigee coordinates to epoch 1980
     val M = {
       // Mean anomaly of the Sun
-      val N = circle(day * Pi2 / days_in_year)
+      val N = day * Pi2 / days_in_year
       Log trace f"N: ${N}"
-      circle(N + ecliptic_longitude_epoch - ecliptic_longitude_perigee)
+      N + ecliptic_longitude_epoch - ecliptic_longitude_perigee
     }
     Log trace f"day: ${day}, M: ${M}"
 
@@ -46,7 +46,7 @@ object MoonPhase extends Logging {
       val angular_diameter = F * sun_angular_size_smaxis
 
       // Suns's geometric ecliptic longuitude
-      val eclipticLongitude = circle(Ec + ecliptic_longitude_perigee)
+      val eclipticLongitude = Ec + ecliptic_longitude_perigee
     }
     Log trace f"sun(eclipticLongitude: ${sun.eclipticLongitude})"
 
@@ -55,10 +55,10 @@ object MoonPhase extends Logging {
     // Calculation of the Moon's position
 
     // Moon's mean longitude
-    val moon_longitude = circle(0.22997150421858628 * day + moon_mean_longitude_epoch)
+    val moon_longitude = 0.22997150421858628 * day + moon_mean_longitude_epoch
 
     // Moon's mean anomaly
-    val MM = circle(moon_longitude - 0.001944368345221015 * day - moon_mean_perigee_epoch)
+    val MM = moon_longitude - 0.001944368345221015 * day - moon_mean_perigee_epoch
 
     // Moon's ascending node mean longitude
     val evection = 0.022233749341155764 * sin(2 * (moon_longitude - sun.eclipticLongitude) - MM)
@@ -90,7 +90,7 @@ object MoonPhase extends Logging {
       // Corrected longitude of the node
       private val NP = {
         // Moon's ascending node mean longitude
-        val MN = circle(node_mean_longitude_epoch - 9.242199067718253E-4 * day)
+        val MN = node_mean_longitude_epoch - 9.242199067718253E-4 * day
         MN - 0.0027925268031909274 * sin(M)
       }
 
@@ -110,7 +110,7 @@ object MoonPhase extends Logging {
     Log debug f"inclination: lambda_moon: ${inclination.lambda_moon}, BetaM: ${inclination.BetaM}"
 
     new {
-      val phase = circle(lPP - sun.eclipticLongitude)
+      val phase = lPP - sun.eclipticLongitude
       Log trace f"phase: ${phase}%5.5f"
       val distance = (moon_smaxis * (1 - pow(moon_eccentricity, 2))) / (1 + moon_eccentricity * cos(MmP + mEc))
     }
@@ -125,7 +125,7 @@ class MoonPhase(date: Date) {
   /**
    * The terminator phase angle as a percentage of a full circle (i.e., 0 to 1)
    */
-  lazy val phase = coefficients.phase / Pi2
+  lazy val phase = circle(coefficients.phase) / Pi2
   /**
    * The illuminated fraction of the Moon's disc
    */
