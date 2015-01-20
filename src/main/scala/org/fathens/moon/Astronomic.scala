@@ -34,9 +34,9 @@ object Astronomic {
    */
   val sun_smaxis = 1.49585e8
   /**
-   * Sun's angular size, in degrees, at semi-major axis distance
+   * Sun's angular size, in radians, at semi-major axis distance
    */
-  val sun_angular_size_smaxis = 0.533128
+  val sun_angular_size_smaxis = 0.00930483893457233
   /**
    * (Elements of the Moon's orbit, epoch 1980.0)
    * Moon's mean longitude at the epoch in radians
@@ -60,9 +60,9 @@ object Astronomic {
    */
   val moon_eccentricity = 0.054900
   /**
-   * Moon's angular size at distance a from Earth
+   * Moon's angular size, in radians, at distance a from Earth
    */
-  val moon_angular_size = 0.5181
+  val moon_angular_size = 0.009042550854582622
   /**
    * Semi-mojor axis of the Moon's orbit, in kilometers
    */
