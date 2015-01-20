@@ -1,5 +1,7 @@
 name := """MoonPhases"""
 
+organization := "org.fathens.moon"
+
 version := "1.0.0"
 
 scalaVersion := "2.11.4"
