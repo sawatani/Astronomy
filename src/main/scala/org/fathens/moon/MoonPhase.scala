@@ -5,9 +5,9 @@ import java.util.Date
 import scala.math._
 
 object MoonDemo extends App with Logging {
-  args.map(Astronomic.Days.iso8601.parse).foreach { date =>
-    Log warn f"Start calculating: ======== ${Astronomic.Days.iso8601 format date} ========"
-    Log info f"${new MoonPhase(date)}"
+  args.foreach { date =>
+    Log warn f"Start calculating: ======== ${date} ========"
+    Log info f"${new MoonPhase(Astronomic.Days.iso8601 parse date)}"
   }
 }
 object MoonPhase extends Logging {
