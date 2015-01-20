@@ -16,14 +16,15 @@ object Astronomic {
      */
     def from1980(date: Date) = jdn(parse(iso8601 format date)) - epoch
   }
+  val days_in_year = 365.2422
   /**
-   * Ecliptic longitude of the Sun at epoch 1980.0
+   * Ecliptic longitude of the Sun at epoch 1980.0 in radians
    */
-  val ecliptic_longitude_epoch = 278.833540
+  val ecliptic_longitude_epoch = 4.86656333799131
   /**
-   * Ecliptic longitude of the Sun at perigee
+   * Ecliptic longitude of the Sun at perigee in radians
    */
-  val ecliptic_longitude_perigee = 282.596403
+  val ecliptic_longitude_perigee = 4.932237686642781
   /**
    * Eccentricity of Earth's orbit
    */
@@ -38,22 +39,22 @@ object Astronomic {
   val sun_angular_size_smaxis = 0.533128
   /**
    * (Elements of the Moon's orbit, epoch 1980.0)
-   * Moon's mean longitude at the epoch
+   * Moon's mean longitude at the epoch in radians
    */
-  val moon_mean_longitude_epoch = 64.975464
+  val moon_mean_longitude_epoch = 1.134035779811045
   /**
    * (Elements of the Moon's orbit, epoch 1980.0)
-   * Mean longitude of the perigee at the epoch
+   * Mean longitude of the perigee at the epoch in radians
    */
-  val moon_mean_perigee_epoch = 349.383063
+  val moon_mean_perigee_epoch = 6.097884800052777
   /**
-   * Mean longitude of the node at the epoch
+   * Mean longitude of the node at the epoch in radians
    */
-  val node_mean_longitude_epoch = 151.950429
+  val node_mean_longitude_epoch = 2.652035285867875
   /**
-   * Inclination of the Moon's orbit
+   * Inclination of the Moon's orbit in radians
    */
-  val moon_inclination = 5.145396
+  val moon_inclination = 0.08980410151894615
   /**
    * Eccentricity of the Moon's orbit
    */
@@ -79,22 +80,17 @@ object Astronomic {
    */
   val earth_radius = 6378.16
   /**
-   * Normalize degrees to (0 <= d < 360)
-   */
-  def fixangle(a: Double) = (360 + a % 360) % 360
-  /**
    * Solve the equation of Kepler.
    */
   def kepler(m: Double, ecc: Double) = {
-    val initial = m.toRadians
     val epsilon = 1e-6
     @tailrec
     def solve(e: Double): Double = {
-      val delta = e - ecc * sin(e) - initial
+      val delta = e - ecc * sin(e) - m
       val next = e - delta / (1.0 - ecc * cos(e))
       if (abs(delta) <= epsilon) next
       else solve(next)
     }
-    solve(initial)
+    solve(m)
   }
 }

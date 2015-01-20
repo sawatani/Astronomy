@@ -7,9 +7,16 @@ import org.specs2._
 
 object MoonPhaseSpec extends Specification with matcher.DataTables with ScalaCheck {
   def is = s2"""
-    Examples of moon phase (at 2015-01-01 - 2015-01-31)    $phases
+  Examples of moon phase (at 2015-01-01 - 2015-01-31)    $phases
     
-    Illuminated is depend on phase                         $ip
+  Circle (normalize radians)
+
+    always inside 0 - 2π                                 $fa01
+    0-2π    => it self                                   $fa02
+    over 2π => decrease 2π            　                 $fa03
+    under 0 => increase 2π              　               $fa04
+
+  Illuminated is depend on phase                         $ip
 """
 
   implicit val precision = 5e-6
@@ -17,6 +24,18 @@ object MoonPhaseSpec extends Specification with matcher.DataTables with ScalaChe
     def must_=~(b: Double)(implicit p: Double) = a must beCloseTo(b, p)
   }
 
+  def fa01 = prop { (d: Double) =>
+    MoonPhase.circle(d) must beBetween(0.0, 2 * math.Pi).excludingEnd
+  }
+  def fa02 = Prop.forAll(Gen.choose(0.0, 2 * math.Pi - 0.00001)) { (d: Double) =>
+    MoonPhase.circle(d) must_=~ d
+  }
+  def fa03 = Prop.forAll(Gen.choose(0.0, 2 * math.Pi - 0.00001)) { (d: Double) =>
+    MoonPhase.circle(2 * math.Pi + d) must_=~ d
+  }
+  def fa04 = Prop.forAll(Gen.choose(0.0, 2 * math.Pi - 0.00001)) { (d: Double) =>
+    MoonPhase.circle(d - 2 * math.Pi) must_=~ d
+  }
   def ip = Prop.forAll(Gen.choose(0, new Date().getTime).map(new Date(_))) { (date: Date) =>
     val moon = new MoonPhase(date)
     moon.illuminated must_=~ (1 - math.cos(moon.phase * math.Pi * 2)) / 2

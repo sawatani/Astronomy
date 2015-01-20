@@ -1,20 +1,12 @@
 package org.fathens.moon
 
 import org.specs2._
-import org.scalacheck._
 
-object AstronomicSpec extends Specification with matcher.DataTables with ScalaCheck {
+object AstronomicSpec extends Specification with matcher.DataTables {
   def is = s2"""
 
   Epoch days                                        $ed01
   
-  Fixangle (normalize degrees)
-
-  always be in 0 - 360                              $fa01
-  0-359    => it self                               $fa02
-  over 360 => decrease 360                          $fa03
-  under 0  => increase 360                          $fa04
-
   Kepler's equation
 
   Example of solutions (at 2015-01-01 - 2015-01-31) $kepler
@@ -28,18 +20,6 @@ object AstronomicSpec extends Specification with matcher.DataTables with ScalaCh
   def ed01 = {
     val date = Astronomic.Days.iso8601 parse "1980-01-01T00:00:00.000Z"
     (Astronomic.Days from1980 date) must_== 1.5
-  }
-  def fa01 = prop { (d: Double) =>
-    Astronomic.fixangle(d) must beBetween(0.0, 360.0).excludingEnd
-  }
-  def fa02 = Prop.forAll(Gen.choose(0.0, 359.9)) { (d: Double) =>
-    Astronomic.fixangle(d) must_=~ d
-  }
-  def fa03 = Prop.forAll(Gen.choose(0.0, 359.9)) { (d: Double) =>
-    Astronomic.fixangle(360 + d) must_=~ d
-  }
-  def fa04 = Prop.forAll(Gen.choose(0.0, 359.9)) { (d: Double) =>
-    Astronomic.fixangle(d - 360) must_=~ d
   }
   def kepler =
     "x" | "y" |
@@ -74,6 +54,6 @@ object AstronomicSpec extends Specification with matcher.DataTables with ScalaCh
       25.82923 ! 0.45820 |
       26.81487 ! 0.47566 |
       27.80052 ! 0.49312 |> {
-        (x, y) => Astronomic.kepler(x, Astronomic.eccentricity) must_=~ y
+        (x, y) => Astronomic.kepler(x.toRadians, Astronomic.eccentricity) must_=~ y
       }
 }
