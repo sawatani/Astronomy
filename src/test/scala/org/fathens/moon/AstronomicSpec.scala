@@ -7,10 +7,11 @@ import org.scalacheck._
 object AstronomicSpec extends SpecificationExt {
   def is = s2"""
 
-  Epoch days
+  Julian Days Number
 
-    1980-01-01 is 1.5                               $ed01
-    Considering hours                               $ed02
+    Epoch 1980-01-01 => 1                           $ed01
+    Examples around 1970-01-01                      $ed02
+    Considering hours                               $ed03
   
   Kepler's equation
 
@@ -19,15 +20,23 @@ object AstronomicSpec extends SpecificationExt {
 
   implicit val precision = Precision(5e-6)
 
-  def ed01 = {
-    val date = Astronomic.Days.iso8601 parse "1980-01-01T00:00:00.000Z"
-    (Astronomic.Days from1980 date) must_== 1.5
-  }
-  def ed02 = Prop.forAll(genDate, Gen.choose(0, 24 * 60 * 60)) { (d1, seconds) =>
-    implicit val precision = Precision(5e-5)
-    val date = Astronomic.Days from1980 new Date(_: Long)
-    (date(d1.getTime + seconds * 1000) - date(d1.getTime)) * 24 * 60 * 60 must_=~ seconds
+  def ed01 = Astronomic.Days.from1980(Astronomic.Days.iso8601 parse "1980-01-01T00:00:00.000Z") must_== 1
+  def ed02 =
+    "date" | "jdn" |
+      2440587.50 ! "1970-01-01T00:00:00.000Z" |
+      2440587.75 ! "1970-01-01T06:00:00.000Z" |
+      2440588.00 ! "1970-01-01T12:00:00.000Z" |
+      2440588.25 ! "1970-01-01T18:00:00.000Z" |
+      2440588.50 ! "1970-01-02T00:00:00.000Z" |
+      2440588.75 ! "1970-01-02T06:00:00.000Z" |
+      2440589.00 ! "1970-01-02T12:00:00.000Z" |> { (jdn, date) =>
+        Astronomic.Days.jdn(Astronomic.Days.iso8601 parse date) must_== jdn
+      }
+  def ed03 = Prop.forAll(genDate, Gen.choose(0, 24 * 60 * 60)) { (date, seconds) =>
+    val jdn = Astronomic.Days jdn new Date(_: Long)
+    jdn(date.getTime + seconds * 1000) must_=~ jdn(date.getTime) + seconds / (24 * 60 * 60.0)
   }.set(minTestsOk = 10000)
+
   def kepler =
     "x" | "y" |
       358.23110 ! 6.25179 |

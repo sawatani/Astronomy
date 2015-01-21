@@ -7,18 +7,23 @@ import scala.math._
 
 object Astronomic {
   object Days {
-    import java.time._
-    def parse(text: String) = OffsetDateTime.parse(text) withOffsetSameInstant ZoneOffset.UTC
-    def jdn(date: OffsetDateTime) = {
-      val days = temporal.JulianFields.JULIAN_DAY.getFrom(date)
-      days + temporal.ChronoField.SECOND_OF_DAY.getFrom(date).toDouble / (24 * 60 * 60)
-    }
-    val epoch = 2444238.5
     def iso8601 = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     /**
-     * From 1980 January 0.0 in JDN
+     * 1970-01-01 in Astronomic Jujian Days Number
      */
-    def from1980(date: Date) = jdn(parse(iso8601 format date)) - epoch
+    val JDN_1970_1_1 = 2440587.5
+    /**
+     * 1980-0-0 in Astronomic Jujian Days Number
+     */
+    val JDN_1980_0 = 2444238.5
+    /**
+     * Calculate Astronomic Jujian Days Number
+     */
+    def jdn(date: Date) = JDN_1970_1_1 + date.getTime / (24 * 60 * 60 * 1000.0) 
+    /**
+     * From 1980 January 0.0 in Astronomic Jujian Days Number
+     */
+    def from1980(date: Date) = jdn(date) - JDN_1980_0
   }
   val days_in_year = 365.2422
   /**
