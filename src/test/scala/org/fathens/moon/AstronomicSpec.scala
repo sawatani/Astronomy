@@ -3,6 +3,7 @@ package org.fathens.moon
 import java.util.Date
 
 import org.scalacheck._
+import org.fathens.math._
 
 object AstronomicSpec extends SpecificationExt {
   def is = s2"""
@@ -70,6 +71,6 @@ object AstronomicSpec extends SpecificationExt {
       25.82923 ! 0.45820 |
       26.81487 ! 0.47566 |
       27.80052 ! 0.49312 |> {
-        (x, y) => Astronomic.kepler(x.toRadians, Astronomic.eccentricity) must_=~ y
+        (x, y) => Astronomic.kepler(Degrees(x), Astronomic.eccentricity).value must_=~ y
       }
 }

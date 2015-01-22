@@ -3,7 +3,7 @@ package org.fathens.moon
 import java.util.Date
 
 import scala.annotation.tailrec
-import scala.math._
+import org.fathens.math._
 
 object Astronomic {
   object Days {
@@ -19,7 +19,7 @@ object Astronomic {
     /**
      * Calculate Astronomic Jujian Days Number
      */
-    def jdn(date: Date) = JDN_1970_1_1 + date.getTime / (24 * 60 * 60 * 1000.0) 
+    def jdn(date: Date) = JDN_1970_1_1 + date.getTime / (24 * 60 * 60 * 1000.0)
     /**
      * From 1980 January 0.0 in Astronomic Jujian Days Number
      */
@@ -29,11 +29,11 @@ object Astronomic {
   /**
    * Ecliptic longitude of the Sun at epoch 1980.0 in radians
    */
-  val ecliptic_longitude_epoch = 4.86656333799131
+  val ecliptic_longitude_epoch = Radians(4.86656333799131)
   /**
    * Ecliptic longitude of the Sun at perigee in radians
    */
-  val ecliptic_longitude_perigee = 4.932237686642781
+  val ecliptic_longitude_perigee = Radians(4.932237686642781)
   /**
    * Eccentricity of Earth's orbit
    */
@@ -41,29 +41,29 @@ object Astronomic {
   /**
    * Semi-major axis of Earth's orbit, in kilometers
    */
-  val sun_smaxis = 1.49585e8
+  val sun_smaxis = Killometers(1.49585e8)
   /**
    * Sun's angular size, in radians, at semi-major axis distance
    */
-  val sun_angular_size_smaxis = 0.00930483893457233
+  val sun_angular_size_smaxis = Radians(0.00930483893457233)
   /**
    * (Elements of the Moon's orbit, epoch 1980.0)
    * Moon's mean longitude at the epoch in radians
    */
-  val moon_mean_longitude_epoch = 1.134035779811045
+  val moon_mean_longitude_epoch = Radians(1.134035779811045)
   /**
    * (Elements of the Moon's orbit, epoch 1980.0)
    * Mean longitude of the perigee at the epoch in radians
    */
-  val moon_mean_perigee_epoch = 6.097884800052777
+  val moon_mean_perigee_epoch = Radians(6.097884800052777)
   /**
    * Mean longitude of the node at the epoch in radians
    */
-  val node_mean_longitude_epoch = 2.652035285867875
+  val node_mean_longitude_epoch = Radians(2.652035285867875)
   /**
    * Inclination of the Moon's orbit in radians
    */
-  val moon_inclination = 0.08980410151894615
+  val moon_inclination = Radians(0.08980410151894615)
   /**
    * Eccentricity of the Moon's orbit
    */
@@ -71,11 +71,11 @@ object Astronomic {
   /**
    * Moon's angular size, in radians, at distance a from Earth
    */
-  val moon_angular_size = 0.009042550854582622
+  val moon_angular_size = Radians(0.009042550854582622)
   /**
    * Semi-mojor axis of the Moon's orbit, in kilometers
    */
-  val moon_smaxis = 384401.0
+  val moon_smaxis = Killometers(384401.0)
   /**
    * Synodic month (new Moon to new Moon), in days
    */
@@ -87,17 +87,17 @@ object Astronomic {
   /**
    * Properties of the Earth
    */
-  val earth_radius = 6378.16
+  val earth_radius = Killometers(6378.16)
   /**
    * Solve the equation of Kepler.
    */
-  def kepler(m: Double, ecc: Double) = {
+  def kepler(m: Radians, ecc: Double) = {
     val epsilon = 1e-6
     @tailrec
-    def solve(e: Double): Double = {
-      val delta = e - ecc * sin(e) - m
+    def solve(e: Radians): Radians = {
+      val delta = e - m - Radians(ecc * sin(e))
       val next = e - delta / (1.0 - ecc * cos(e))
-      if (abs(delta) <= epsilon) next
+      if (delta.abs.value <= epsilon) next
       else solve(next)
     }
     solve(m)

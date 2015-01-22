@@ -3,6 +3,7 @@ package org.fathens.moon
 import java.util.Date
 
 import org.scalacheck._
+import org.fathens.math._
 
 object MoonPhaseSpec extends SpecificationExt {
   def is = s2"""
@@ -21,16 +22,16 @@ object MoonPhaseSpec extends SpecificationExt {
   implicit val precision = Precision(5e-6)
 
   def fa01 = prop { (d: Double) =>
-    MoonPhase.circle(d) must beBetween(0.0, 2 * math.Pi).excludingEnd
+    MoonPhase.circle(Radians(d)).value must beBetween(0.0, 2 * Pi.value).excludingEnd
   }
   def fa02 = Prop.forAll(Gen.choose(0.0, 2 * math.Pi - 0.00001)) { (d: Double) =>
-    MoonPhase.circle(d) must_=~ d
+    MoonPhase.circle(Radians(d)).value must_=~ d
   }
   def fa03 = Prop.forAll(Gen.choose(0.0, 2 * math.Pi - 0.00001)) { (d: Double) =>
-    MoonPhase.circle(2 * math.Pi + d) must_=~ d
+    MoonPhase.circle(Pi2 + Radians(d)).value must_=~ d
   }
   def fa04 = Prop.forAll(Gen.choose(0.0, 2 * math.Pi - 0.00001)) { (d: Double) =>
-    MoonPhase.circle(d - 2 * math.Pi) must_=~ d
+    MoonPhase.circle(-Pi2 + Radians(d)).value must_=~ d
   }
   def ip = Prop.forAll(genDate) { (date: Date) =>
     val moon = new MoonPhase(date)
