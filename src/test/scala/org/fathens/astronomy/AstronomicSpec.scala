@@ -18,7 +18,7 @@ object AstronomicSpec extends Specification with DataTables with ScalaCheck {
   
   Kepler's equation
 
-  Example of solutions (at 2015-01-01 - 2015-01-31) $kepler
+  Example of solutions (at 2015-01-01 - 2015-01-31) $kp01
   """
 
   /**
@@ -33,7 +33,7 @@ object AstronomicSpec extends Specification with DataTables with ScalaCheck {
    */
   val genDate = Gen.choose(0, new java.util.Date().getTime * 2).map(new java.util.Date(_))
   
-  def ed01 = Astronomic.Days.from1980(Astronomic.Days.iso8601 parse "1980-01-01T00:00:00.000Z") must_== 1
+  def ed01 = Days.from1980(Days.iso8601 parse "1980-01-01T00:00:00.000Z") must_== 1
   def ed02 =
     "date" | "jdn" |
       2440587.50 ! "1970-01-01T00:00:00.000Z" |
@@ -43,14 +43,14 @@ object AstronomicSpec extends Specification with DataTables with ScalaCheck {
       2440588.50 ! "1970-01-02T00:00:00.000Z" |
       2440588.75 ! "1970-01-02T06:00:00.000Z" |
       2440589.00 ! "1970-01-02T12:00:00.000Z" |> { (jdn, date) =>
-        Astronomic.Days.jdn(Astronomic.Days.iso8601 parse date) must_== jdn
+        Days.jdn(Days.iso8601 parse date) must_== jdn
       }
   def ed03 = Prop.forAll(genDate, Gen.choose(0, 24 * 60 * 60)) { (date, seconds) =>
-    val jdn = Astronomic.Days jdn new Date(_: Long)
+    val jdn = Days jdn new Date(_: Long)
     jdn(date.getTime + seconds * 1000) must_=~ jdn(date.getTime) + seconds / (24 * 60 * 60.0)
   }.set(minTestsOk = 10000)
 
-  def kepler =
+  def kp01 =
     "x" | "y" |
       358.23110 ! 6.25179 |
       359.21675 ! 6.26928 |
@@ -83,6 +83,6 @@ object AstronomicSpec extends Specification with DataTables with ScalaCheck {
       25.82923 ! 4.58200e-1 |
       26.81487 ! 4.75663e-1 |
       27.80052 ! 4.93125e-1 |> {
-        (x, y) => Astronomic.kepler(Degrees(x), Astronomic.eccentricity).value must_=~ y
+        (x, y) => kepler(Degrees(x), eccentricity).value must_=~ y
       }
 }

@@ -1,11 +1,11 @@
-package org.fathens.astronomy
+package org.fathens
 
 import java.util.Date
 
 import scala.annotation.tailrec
 import org.fathens.math._
 
-object Astronomic {
+package object astronomy {
   object Days {
     def iso8601 = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
     /**

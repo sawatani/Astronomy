@@ -3,16 +3,16 @@ package org.fathens.astronomy
 import java.util.Date
 
 import org.fathens.math._
+
 import com.typesafe.scalalogging.LazyLogging
 
 object MoonDemo extends App with LazyLogging {
   args.foreach { date =>
     logger warn f"Start calculating: ======== ${date} ========"
-    logger info f"${new MoonPhase(Astronomic.Days.iso8601 parse date)}"
+    logger info f"${new MoonPhase(Days.iso8601 parse date)}"
   }
 }
 object MoonPhase extends LazyLogging {
-  import Astronomic._
 
   def circle(a: Radians) = (Pi2 + a % Pi2) % Pi2
 
@@ -45,7 +45,7 @@ object MoonPhase extends LazyLogging {
       val distance = sun_smaxis / F
       val angular_diameter = F * sun_angular_size_smaxis
 
-      // Suns's geometric ecliptic longuitude
+      // Suns's geocentric ecliptic longitude
       val eclipticLongitude = ta + ecliptic_longitude_perigee
     }
     logger trace f"sun(ecliptic_longitude: ${sun.eclipticLongitude})"
@@ -118,7 +118,6 @@ object MoonPhase extends LazyLogging {
 }
 class MoonPhase(date: Date) {
   import MoonPhase._
-  import Astronomic._
 
   private lazy val coefficients = at(date)
 

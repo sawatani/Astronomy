@@ -82,6 +82,6 @@ object MoonPhaseSpec extends Specification with DataTables with ScalaCheck {
       09.18700 ! "2015-01-29T00:00:00.000Z" |
       10.16004 ! "2015-01-30T00:00:00.000Z" |
       11.11375 ! "2015-01-31T00:00:00.000Z" |> { (age, date) =>
-        new MoonPhase(Astronomic.Days.iso8601 parse date).age must_=~ age
+        new MoonPhase(Days.iso8601 parse date).age must_=~ age
       }
 }
