@@ -8,8 +8,6 @@ import com.typesafe.scalalogging.LazyLogging
 
 object Moon extends LazyLogging {
 
-  def circle(a: Radians) = (Pi2 + a % Pi2) % Pi2
-
   def at(date: Date) = {
     val sun = Sun(date)
     val day = Days from1980 date
@@ -88,7 +86,7 @@ class Moon(date: Date) {
   /**
    * The terminator phase angle as a percentage of a full circle (i.e., 0 to 1)
    */
-  lazy val phase = circle(coefficients.phase) / Pi2
+  lazy val phase = coefficients.phase.normalize / Pi2
   /**
    * The illuminated fraction of the Moon's disc
    */

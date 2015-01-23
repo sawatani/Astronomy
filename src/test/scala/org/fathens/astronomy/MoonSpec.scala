@@ -10,13 +10,6 @@ import org.fathens.math._
 object MoonSpec extends Specification with DataTables with ScalaCheck {
   def is = s2"""
   Examples of moon phase (at 2015-01-01 - 2015-01-31)    $phases
-    
-  Circle (normalize radians)
-
-    always inside 0 - 2π                                 $fa01
-    0-2π    => it self                                   $fa02
-    over 2π => decrease 2π            　                 $fa03
-    under 0 => increase 2π              　               $fa04
 
   Illuminated is depend on phase                         $ip
 """
@@ -33,18 +26,6 @@ object MoonSpec extends Specification with DataTables with ScalaCheck {
    */
   val genDate = Gen.choose(0, new java.util.Date().getTime * 2).map(new java.util.Date(_))
 
-  def fa01 = prop { (d: Double) =>
-    Moon.circle(Radians(d)).value must beBetween(0.0, 2 * Pi.value).excludingEnd
-  }
-  def fa02 = Prop.forAll(Gen.choose(0.0, 2 * math.Pi - 0.00001)) { (d: Double) =>
-    Moon.circle(Radians(d)).value must_=~ d
-  }
-  def fa03 = Prop.forAll(Gen.choose(0.0, 2 * math.Pi - 0.00001)) { (d: Double) =>
-    Moon.circle(Pi2 + Radians(d)).value must_=~ d
-  }
-  def fa04 = Prop.forAll(Gen.choose(0.0, 2 * math.Pi - 0.00001)) { (d: Double) =>
-    Moon.circle(-Pi2 + Radians(d)).value must_=~ d
-  }
   def ip = Prop.forAll(genDate) { (date: Date) =>
     val moon = new Moon(date)
     moon.illuminated must_=~ (1 - math.cos(moon.phase * math.Pi * 2)) / 2
