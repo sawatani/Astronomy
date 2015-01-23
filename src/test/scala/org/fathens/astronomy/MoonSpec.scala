@@ -7,7 +7,7 @@ import org.specs2._
 import org.specs2.matcher._
 import org.fathens.math._
 
-object MoonPhaseSpec extends Specification with DataTables with ScalaCheck {
+object MoonSpec extends Specification with DataTables with ScalaCheck {
   def is = s2"""
   Examples of moon phase (at 2015-01-01 - 2015-01-31)    $phases
     
@@ -34,19 +34,19 @@ object MoonPhaseSpec extends Specification with DataTables with ScalaCheck {
   val genDate = Gen.choose(0, new java.util.Date().getTime * 2).map(new java.util.Date(_))
 
   def fa01 = prop { (d: Double) =>
-    MoonPhase.circle(Radians(d)).value must beBetween(0.0, 2 * Pi.value).excludingEnd
+    Moon.circle(Radians(d)).value must beBetween(0.0, 2 * Pi.value).excludingEnd
   }
   def fa02 = Prop.forAll(Gen.choose(0.0, 2 * math.Pi - 0.00001)) { (d: Double) =>
-    MoonPhase.circle(Radians(d)).value must_=~ d
+    Moon.circle(Radians(d)).value must_=~ d
   }
   def fa03 = Prop.forAll(Gen.choose(0.0, 2 * math.Pi - 0.00001)) { (d: Double) =>
-    MoonPhase.circle(Pi2 + Radians(d)).value must_=~ d
+    Moon.circle(Pi2 + Radians(d)).value must_=~ d
   }
   def fa04 = Prop.forAll(Gen.choose(0.0, 2 * math.Pi - 0.00001)) { (d: Double) =>
-    MoonPhase.circle(-Pi2 + Radians(d)).value must_=~ d
+    Moon.circle(-Pi2 + Radians(d)).value must_=~ d
   }
   def ip = Prop.forAll(genDate) { (date: Date) =>
-    val moon = new MoonPhase(date)
+    val moon = new Moon(date)
     moon.illuminated must_=~ (1 - math.cos(moon.phase * math.Pi * 2)) / 2
   }
   def phases =
@@ -82,6 +82,6 @@ object MoonPhaseSpec extends Specification with DataTables with ScalaCheck {
       09.18700 ! "2015-01-29T00:00:00.000Z" |
       10.16004 ! "2015-01-30T00:00:00.000Z" |
       11.11375 ! "2015-01-31T00:00:00.000Z" |> { (age, date) =>
-        new MoonPhase(Days.iso8601 parse date).age must_=~ age
+        new Moon(Days.iso8601 parse date).age must_=~ age
       }
 }

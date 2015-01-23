@@ -4,26 +4,6 @@ import org.fathens.math._
 
 package object astronomy {
   /**
-   * Ecliptic longitude of the Sun at epoch 1980.0
-   */
-  val ecliptic_longitude_epoch = Degrees(278.83354)
-  /**
-   * Ecliptic longitude of the Sun at perigee
-   */
-  val ecliptic_longitude_perigee = Degrees(282.596403)
-  /**
-   * Eccentricity of Earth's orbit
-   */
-  val eccentricity = 0.016718
-  /**
-   * Semi-major axis of Earth's orbit, in kilometers
-   */
-  val sun_smaxis = Killometers(1.49585e8)
-  /**
-   * Sun's angular size, in radians, at semi-major axis distance
-   */
-  val sun_angular_size_smaxis = Radians(0.00930483893457233)
-  /**
    * (Elements of the Moon's orbit, epoch 1980.0)
    * Moon's mean longitude at the epoch
    */
