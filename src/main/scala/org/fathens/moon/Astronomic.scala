@@ -19,13 +19,13 @@ object Astronomic {
   }
   val days_in_year = 365.2422
   /**
-   * Ecliptic longitude of the Sun at epoch 1980.0 in radians
+   * Ecliptic longitude of the Sun at epoch 1980.0
    */
-  val ecliptic_longitude_epoch = Radians(4.86656333799131)
+  val ecliptic_longitude_epoch = Degrees(278.83354)
   /**
-   * Ecliptic longitude of the Sun at perigee in radians
+   * Ecliptic longitude of the Sun at perigee
    */
-  val ecliptic_longitude_perigee = Radians(4.932237686642781)
+  val ecliptic_longitude_perigee = Degrees(282.596403)
   /**
    * Eccentricity of Earth's orbit
    */
@@ -40,22 +40,22 @@ object Astronomic {
   val sun_angular_size_smaxis = Radians(0.00930483893457233)
   /**
    * (Elements of the Moon's orbit, epoch 1980.0)
-   * Moon's mean longitude at the epoch in radians
+   * Moon's mean longitude at the epoch
    */
-  val moon_mean_longitude_epoch = Radians(1.134035779811045)
+  val moon_mean_longitude_epoch = Degrees(64.975464)
   /**
    * (Elements of the Moon's orbit, epoch 1980.0)
-   * Mean longitude of the perigee at the epoch in radians
+   * Mean longitude of the perigee at the epoch
    */
-  val moon_mean_perigee_epoch = Radians(6.097884800052777)
+  val moon_mean_perigee_epoch = Degrees(349.383063)
   /**
-   * Mean longitude of the node at the epoch in radians
+   * Mean longitude of the node at the epoch
    */
-  val node_mean_longitude_epoch = Radians(2.652035285867875)
+  val node_mean_longitude_epoch = Degrees(151.950429)
   /**
-   * Inclination of the Moon's orbit in radians
+   * Inclination of the Moon's orbit
    */
-  val moon_inclination = Radians(0.08980410151894615)
+  val moon_inclination = Degrees(5.145396)
   /**
    * Eccentricity of the Moon's orbit
    */
