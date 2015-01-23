@@ -43,19 +43,19 @@ object Moon {
 class Moon(date: java.util.Date) {
   import Moon._
 
-  val sun = new Sun(date)
+  lazy val sun = new Sun(date)
 
-  val days_from_epoch = Days from1980 date
+  lazy val days_from_epoch = Days from1980 date
   /**
    * Mean longitude
    */
-  val moon_longitude = Degrees(13.1763966) * days_from_epoch + mean_longitude_epoch
+  lazy val moon_longitude = Degrees(13.1763966) * days_from_epoch + mean_longitude_epoch
   /**
    * Mean anomaly
    */
-  val mean_anomaly = moon_longitude - Degrees(0.1114041) * days_from_epoch - mean_perigee_epoch
+  lazy val mean_anomaly = moon_longitude - Degrees(0.1114041) * days_from_epoch - mean_perigee_epoch
 
-  val (true_longitude, true_anomaly) = {
+  lazy val (true_longitude, true_anomaly) = {
     // Moon's ascending node mean longitude
     val node_mean_longitude = {
       val evection = Degrees(1.2739) * sin(2 * (moon_longitude - sun.ecliptic_longitude) - mean_anomaly)
@@ -77,7 +77,7 @@ class Moon(date: java.util.Date) {
     (lP + variation, MmP + mEc)
   }
 
-  val (ecliptic_latitude, ecliptic_longitude) = {
+  lazy val (ecliptic_latitude, ecliptic_longitude) = {
     // Corrected longitude of the node
     val NP = {
       // Moon's ascending node mean longitude

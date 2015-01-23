@@ -28,20 +28,20 @@ object Sun {
 class Sun(date: java.util.Date) {
   import Sun._
 
-  val mean_anomaly_perigee = {
+  lazy val mean_anomaly_perigee = {
     val day = Days from1980 date
     val N = day * Pi2 / Days.one_year
     // Convert from perigee coordinates to epoch 1980
     N + ecliptic_longitude_epoch - ecliptic_longitude_perigee
   }
-  val true_anomaly = {
+  lazy val true_anomaly = {
     // Eccentric anomaly
     val a = Equations.kepler(mean_anomaly_perigee, eccentricity)
     val b = ((1 + eccentricity) / (1 - eccentricity)).sqrt * tan(a / 2.0)
     2 * atan(b)
   }
 
-  val (distance, angular_diameter) = {
+  lazy val (distance, angular_diameter) = {
     // Orbital distance factor
     val F = (1 + eccentricity * cos(true_anomaly)) / (1 - (eccentricity ^ 2))
     (sun_smaxis / F, F * sun_angular_size_smaxis)
@@ -50,5 +50,5 @@ class Sun(date: java.util.Date) {
   /**
    * Geocentric ecliptic longitude
    */
-  val ecliptic_longitude = true_anomaly + ecliptic_longitude_perigee
+  lazy val ecliptic_longitude = true_anomaly + ecliptic_longitude_perigee
 }
