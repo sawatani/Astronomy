@@ -1,23 +1,8 @@
 package org.fathens
 
-import java.util.Date
-
-import scala.annotation.tailrec
 import org.fathens.math._
 
 package object astronomy {
-  object Days {
-    def iso8601 = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-    /**
-     * Calculate Astronomic Jujian Days Number
-     */
-    def jdn(date: Date) = 2440587.5 + date.getTime / (24 * 60 * 60 * 1000.0)
-    /**
-     * From 1980 January 0.0 in Astronomic Jujian Days Number
-     */
-    def from1980(date: Date) = jdn(date) - 2444238.5
-  }
-  val days_in_year = 365.2422
   /**
    * Ecliptic longitude of the Sun at epoch 1980.0
    */
@@ -80,18 +65,4 @@ package object astronomy {
    * Properties of the Earth
    */
   val earth_radius = Killometers(6378.16)
-  /**
-   * Solve the equation of Kepler.
-   */
-  def kepler(m: Radians, ecc: Double) = {
-    val epsilon = 1e-6
-    @tailrec
-    def solve(e: Radians): Radians = {
-      val delta = e - m - Radians(ecc * sin(e))
-      val next = e - delta / (1.0 - ecc * cos(e))
-      if (delta.abs.value <= epsilon) next
-      else solve(next)
-    }
-    solve(m)
-  }
 }

@@ -22,7 +22,7 @@ object MoonPhase extends LazyLogging {
     // Convert from perigee coordinates to epoch 1980
     val M = {
       // Mean anomaly of the Sun
-      val N = day * Pi2 / days_in_year
+      val N = day * Pi2 / Days.one_year
       logger trace f"N: ${N}"
       N + ecliptic_longitude_epoch - ecliptic_longitude_perigee
     }
@@ -32,7 +32,7 @@ object MoonPhase extends LazyLogging {
       // True anomaly
       private val ta = {
         // Eccentric anomaly
-        val a = kepler(M, eccentricity)
+        val a = Equations.kepler(M, eccentricity)
         logger debug f"Kepler's equation(Mean anomaly: ${M}, eccentricity: ${eccentricity})=${a}"
         val b = ((1 + eccentricity) / (1 - eccentricity)).sqrt * tan(a / 2.0)
         2 * atan(b)
