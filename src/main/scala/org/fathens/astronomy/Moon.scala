@@ -49,32 +49,27 @@ class Moon(date: java.util.Date) {
   /**
    * Mean longitude
    */
-  lazy val moon_longitude = Degrees(13.1763966) * days_from_epoch + mean_longitude_epoch
+  lazy val mean_longitude = Degrees(13.1763966) * days_from_epoch + mean_longitude_epoch
   /**
    * Mean anomaly
    */
-  lazy val mean_anomaly = moon_longitude - Degrees(0.1114041) * days_from_epoch - mean_perigee_epoch
+  lazy val mean_anomaly = mean_longitude - Degrees(0.1114041) * days_from_epoch - mean_perigee_epoch
 
   lazy val (true_longitude, true_anomaly) = {
-    // Moon's ascending node mean longitude
-    val node_mean_longitude = {
-      val evection = Degrees(1.2739) * sin(2 * (moon_longitude - sun.ecliptic_longitude) - mean_anomaly)
+    val ml = {
+      val evection = Degrees(1.2739) * sin(2 * (mean_longitude - sun.ecliptic_longitude) - mean_anomaly)
       // Annual equation
-      val annual_eq = Degrees(0.1858) * sin(sun.mean_anomaly_perigee)
-
-      evection - annual_eq
+      evection - Degrees(0.1858) * sin(sun.mean_anomaly_perigee)
     }
-    val MmP = mean_anomaly + node_mean_longitude - Degrees(0.37) * sin(sun.mean_anomaly_perigee)
-
+    val mp = mean_anomaly + ml - Degrees(0.37) * sin(sun.mean_anomaly_perigee)
     // Correction for the equation of the centre
-    val mEc = Degrees(6.2886) * sin(MmP)
+    val ec = Degrees(6.2886) * sin(mp)
 
     // Corrected longitude
-    val lP = moon_longitude + mEc + node_mean_longitude + Degrees(0.214) * sin(2 * MmP)
-    // Variation
-    val variation = Degrees(0.6583) * sin(2 * (lP - sun.ecliptic_longitude))
+    val corrected_longitude = mean_longitude + ml + Degrees(0.214) * sin(2 * mp) + ec
+    val variation = Degrees(0.6583) * sin(2 * (corrected_longitude - sun.ecliptic_longitude))
 
-    (lP + variation, MmP + mEc)
+    (corrected_longitude + variation, mp + ec)
   }
 
   lazy val (ecliptic_latitude, ecliptic_longitude) = {
@@ -110,7 +105,7 @@ class Moon(date: java.util.Date) {
   /**
    * Moon's angular diameter
    */
-  lazy val angularDiameter = smaxis / distance * angular_size
+  lazy val angular_diameter = smaxis / distance * angular_size
 
   override def toString = {
     f"MoonPhase(illuminated: ${illuminated * 100}%3.5f%%, age: ${age}%02.5f)"
