@@ -1,4 +1,4 @@
-package org.fathens.moon
+package org.fathens.astronomy
 
 import java.util.Date
 
