@@ -2,9 +2,7 @@ package org.fathens.astronomy
 
 import org.fathens.math._
 
-import com.typesafe.scalalogging.LazyLogging
-
-object Sun extends LazyLogging {
+object Sun {
   /**
    * Ecliptic longitude of the Sun at epoch 1980.0
    */
@@ -33,7 +31,7 @@ object Sun extends LazyLogging {
     new Sun(N + ecliptic_longitude_epoch - ecliptic_longitude_perigee)
   }
 }
-class Sun(val mean_anomaly_perigee: Degrees) extends LazyLogging {
+class Sun(val mean_anomaly_perigee: Degrees) {
   import Sun._
 
   val true_anomaly = {

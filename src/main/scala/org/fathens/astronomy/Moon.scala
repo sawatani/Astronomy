@@ -4,9 +4,12 @@ import java.util.Date
 
 import org.fathens.math._
 
-import com.typesafe.scalalogging.LazyLogging
+object Moon {
+  /**
+   * Synodic month (new Moon to new Moon), in days
+   */
+  val synodic_month = 29.53058868
 
-object Moon extends LazyLogging {
   /**
    * (Elements of the Moon's orbit, epoch 1980.0)
    * Moon's mean longitude at the epoch
@@ -17,6 +20,10 @@ object Moon extends LazyLogging {
    * Mean longitude of the perigee at the epoch
    */
   val mean_perigee_epoch = Degrees(349.383063)
+  /**
+   * Mean longitude of the node at the epoch
+   */
+  val node_mean_longitude_epoch = Degrees(151.950429)
 
   /**
    * Inclination of the Moon's orbit
@@ -34,79 +41,58 @@ object Moon extends LazyLogging {
    * Semi-mojor axis of the Moon's orbit, in kilometers
    */
   val smaxis = Killometers(384401.0)
-  /**
-   * Synodic month (new Moon to new Moon), in days
-   */
-  val synodic_month = 29.53058868
-  /**
-   * Mean longitude of the node at the epoch
-   */
-  val node_mean_longitude_epoch = Degrees(151.950429)
 }
-class Moon(date: Date) extends LazyLogging {
+class Moon(date: Date) {
   import Moon._
 
-  lazy val (rotation, true_anomaly) = {
-    val sun = Sun(date)
-    val day = Days from1980 date
+  val sun = Sun(date)
 
-    // Moon's mean longitude
-    val moon_longitude = Degrees(13.1763966) * day + mean_longitude_epoch
+  val days_from_epoch = Days from1980 date
+  /**
+   * Mean longitude
+   */
+  val moon_longitude = Degrees(13.1763966) * days_from_epoch + mean_longitude_epoch
+  /**
+   * Mean anomaly
+   */
+  val mean_anomaly = moon_longitude - Degrees(0.1114041) * days_from_epoch - mean_perigee_epoch
 
-    // Moon's mean anomaly
-    val MM = moon_longitude - Degrees(0.1114041) * day - mean_perigee_epoch
-
+  val (true_longitude, true_anomaly) = {
     // Moon's ascending node mean longitude
-    val evection = Degrees(1.2739) * sin(2 * (moon_longitude - sun.ecliptic_longitude) - MM)
+    val node_mean_longitude = {
+      val evection = Degrees(1.2739) * sin(2 * (moon_longitude - sun.ecliptic_longitude) - mean_anomaly)
+      // Annual equation
+      val annual_eq = Degrees(0.1858) * sin(sun.mean_anomaly_perigee)
 
-    // Annual equation
-    val annual_eq = Degrees(0.1858) * sin(sun.mean_anomaly_perigee)
-
-    val MmP = MM + evection - annual_eq - Degrees(0.37) * sin(sun.mean_anomaly_perigee)
+      evection - annual_eq
+    }
+    val MmP = mean_anomaly + node_mean_longitude - Degrees(0.37) * sin(sun.mean_anomaly_perigee)
 
     // Correction for the equation of the centre
     val mEc = Degrees(6.2886) * sin(MmP)
 
-    // True longitude
-    val lPP = {
-      // Corrected longitude
-      val lP = moon_longitude + evection + mEc - annual_eq + Degrees(0.214) * sin(2 * MmP)
-      // Variation
-      val variation = Degrees(0.6583) * sin(2 * (lP - sun.ecliptic_longitude))
+    // Corrected longitude
+    val lP = moon_longitude + mEc + node_mean_longitude + Degrees(0.214) * sin(2 * MmP)
+    // Variation
+    val variation = Degrees(0.6583) * sin(2 * (lP - sun.ecliptic_longitude))
 
-      lP + variation
-    }
-    logger trace f"lPP=${lPP}"
-
-    ///////
-    //
-    // Calculation of the Moon's inclination
-    // unused for phase calculation.
-    val inclinations = new {
-      // Corrected longitude of the node
-      private val NP = {
-        // Moon's ascending node mean longitude
-        val MN = node_mean_longitude_epoch - Degrees(0.0529539) * day
-        MN - Degrees(0.16) * sin(sun.mean_anomaly_perigee)
-      }
-
-      // Ecliptic longitude
-      val lambda_moon = {
-        // Y inclination coordinate
-        val y = sin(lPP - NP) * cos(inclination)
-        // X inclination coordinate
-        val x = cos(lPP - NP)
-
-        atan2(y, x) + NP
-      }
-
-      // Ecliptic latitude
-      val BetaM = asin(sin(lPP - NP) * sin(inclination))
-    }
-    logger debug f"inclination: lambda_moon: ${inclinations.lambda_moon}, BetaM: ${inclinations.BetaM}"
-
-    (lPP - sun.ecliptic_longitude, MmP + mEc)
+    (lP + variation, MmP + mEc)
   }
+
+  val (ecliptic_latitude, ecliptic_longitude) = {
+    // Corrected longitude of the node
+    val NP = {
+      // Moon's ascending node mean longitude
+      val MN = node_mean_longitude_epoch - Degrees(0.0529539) * days_from_epoch
+      MN - Degrees(0.16) * sin(sun.mean_anomaly_perigee)
+    }
+    (
+      asin(sin(true_longitude - NP) * sin(inclination)), // Ecliptic Latitude
+      atan2(sin(true_longitude - NP) * cos(inclination), cos(true_longitude - NP)) + NP // Ecliptic Longitude
+    )
+  }
+
+  lazy val rotation = true_longitude - sun.ecliptic_longitude
   /**
    * The terminator phase angle as a percentage of a full circle (i.e., 0 to 1)
    */
