@@ -3,14 +3,15 @@ package org.fathens.moon
 import java.util.Date
 
 import org.fathens.math._
+import com.typesafe.scalalogging.LazyLogging
 
-object MoonDemo extends App with Logging {
+object MoonDemo extends App with LazyLogging {
   args.foreach { date =>
-    Log warn f"Start calculating: ======== ${date} ========"
-    Log info f"${new MoonPhase(Astronomic.Days.iso8601 parse date)}"
+    logger warn f"Start calculating: ======== ${date} ========"
+    logger info f"${new MoonPhase(Astronomic.Days.iso8601 parse date)}"
   }
 }
-object MoonPhase extends Logging {
+object MoonPhase extends LazyLogging {
   import Astronomic._
 
   def circle(a: Radians) = (Pi2 + a % Pi2) % Pi2
@@ -22,21 +23,21 @@ object MoonPhase extends Logging {
     val M = {
       // Mean anomaly of the Sun
       val N = day * Pi2 / days_in_year
-      Log trace f"N: ${N}"
+      logger trace f"N: ${N}"
       N + ecliptic_longitude_epoch - ecliptic_longitude_perigee
     }
-    Log trace f"Mean anomaly(day: ${day}): ${M}"
+    logger trace f"Mean anomaly(day: ${day}): ${M}"
 
     val sun = new {
       // True anomaly
       private val ta = {
         // Eccentric anomaly
         val a = kepler(M, eccentricity)
-        Log debug f"Kepler's equation(Mean anomaly: ${M}, eccentricity: ${eccentricity})=${a}"
+        logger debug f"Kepler's equation(Mean anomaly: ${M}, eccentricity: ${eccentricity})=${a}"
         val b = ((1 + eccentricity) / (1 - eccentricity)).sqrt * tan(a / 2.0)
         2 * atan(b)
       }
-      Log trace f"Sun's True anomaly: ${ta}"
+      logger trace f"Sun's True anomaly: ${ta}"
       // Orbital distance factor
       private val F = ((1 + eccentricity * cos(ta)) / (1 - (eccentricity ^ 2)))
 
@@ -47,7 +48,7 @@ object MoonPhase extends Logging {
       // Suns's geometric ecliptic longuitude
       val eclipticLongitude = ta + ecliptic_longitude_perigee
     }
-    Log trace f"sun(ecliptic_longitude: ${sun.eclipticLongitude})"
+    logger trace f"sun(ecliptic_longitude: ${sun.eclipticLongitude})"
 
     ////////
     //
@@ -79,7 +80,7 @@ object MoonPhase extends Logging {
 
       lP + variation
     }
-    Log trace f"lPP=${lPP}"
+    logger trace f"lPP=${lPP}"
 
     ///////
     //
@@ -106,11 +107,11 @@ object MoonPhase extends Logging {
       // Ecliptic latitude
       val BetaM = asin(sin(lPP - NP) * sin(moon_inclination))
     }
-    Log debug f"inclination: lambda_moon: ${inclination.lambda_moon}, BetaM: ${inclination.BetaM}"
+    logger debug f"inclination: lambda_moon: ${inclination.lambda_moon}, BetaM: ${inclination.BetaM}"
 
     new {
       val phase = lPP - sun.eclipticLongitude
-      Log trace f"phase: ${phase}"
+      logger trace f"phase: ${phase}"
       val distance = (moon_smaxis * (1 - (moon_eccentricity ^ 2))) / (1 + moon_eccentricity * cos(MmP + mEc))
     }
   }
