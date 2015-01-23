@@ -7,6 +7,41 @@ import org.fathens.math._
 import com.typesafe.scalalogging.LazyLogging
 
 object Moon extends LazyLogging {
+  /**
+   * (Elements of the Moon's orbit, epoch 1980.0)
+   * Moon's mean longitude at the epoch
+   */
+  val mean_longitude_epoch = Degrees(64.975464)
+  /**
+   * (Elements of the Moon's orbit, epoch 1980.0)
+   * Mean longitude of the perigee at the epoch
+   */
+  val mean_perigee_epoch = Degrees(349.383063)
+
+  /**
+   * Inclination of the Moon's orbit
+   */
+  val inclination = Degrees(5.145396)
+  /**
+   * Eccentricity of the Moon's orbit
+   */
+  val eccentricity = 0.054900
+  /**
+   * Moon's angular size, in radians, at distance a from Earth
+   */
+  val angular_size = Radians(0.009042550854582622)
+  /**
+   * Semi-mojor axis of the Moon's orbit, in kilometers
+   */
+  val smaxis = Killometers(384401.0)
+  /**
+   * Synodic month (new Moon to new Moon), in days
+   */
+  val synodic_month = 29.53058868
+  /**
+   * Mean longitude of the node at the epoch
+   */
+  val node_mean_longitude_epoch = Degrees(151.950429)
 
   def at(date: Date) = {
     val sun = Sun(date)
@@ -17,10 +52,10 @@ object Moon extends LazyLogging {
     // Calculation of the Moon's position
 
     // Moon's mean longitude
-    val moon_longitude = Radians(0.22997150421858628) * day + moon_mean_longitude_epoch
+    val moon_longitude = Radians(0.22997150421858628) * day + mean_longitude_epoch
 
     // Moon's mean anomaly
-    val MM = moon_longitude - Radians(0.001944368345221015) * day - moon_mean_perigee_epoch
+    val MM = moon_longitude - Radians(0.001944368345221015) * day - mean_perigee_epoch
 
     // Moon's ascending node mean longitude
     val evection = Radians(0.022233749341155764) * sin(2 * (moon_longitude - sun.ecliptic_longitude) - MM)
@@ -48,7 +83,7 @@ object Moon extends LazyLogging {
     //
     // Calculation of the Moon's inclination
     // unused for phase calculation.
-    val inclination = new {
+    val inclinations = new {
       // Corrected longitude of the node
       private val NP = {
         // Moon's ascending node mean longitude
@@ -59,7 +94,7 @@ object Moon extends LazyLogging {
       // Ecliptic longitude
       val lambda_moon = {
         // Y inclination coordinate
-        val y = sin(lPP - NP) * cos(moon_inclination)
+        val y = sin(lPP - NP) * cos(inclination)
         // X inclination coordinate
         val x = cos(lPP - NP)
 
@@ -67,14 +102,14 @@ object Moon extends LazyLogging {
       }
 
       // Ecliptic latitude
-      val BetaM = asin(sin(lPP - NP) * sin(moon_inclination))
+      val BetaM = asin(sin(lPP - NP) * sin(inclination))
     }
-    logger debug f"inclination: lambda_moon: ${inclination.lambda_moon}, BetaM: ${inclination.BetaM}"
+    logger debug f"inclination: lambda_moon: ${inclinations.lambda_moon}, BetaM: ${inclinations.BetaM}"
 
     new {
       val phase = lPP - sun.ecliptic_longitude
       logger trace f"phase: ${phase}"
-      val distance = (moon_smaxis * (1 - (moon_eccentricity ^ 2))) / (1 + moon_eccentricity * cos(MmP + mEc))
+      val distance = (smaxis * (1 - (eccentricity ^ 2))) / (1 + eccentricity * cos(MmP + mEc))
     }
   }
 }
@@ -102,7 +137,7 @@ class Moon(date: Date) {
   /**
    * Moon's angular diameter
    */
-  lazy val angularDiameter = moon_smaxis / distance * moon_angular_size
+  lazy val angularDiameter = smaxis / distance * angular_size
 
   override def toString = {
     f"MoonPhase(illuminated: ${illuminated * 100}%3.5f%%, age: ${age}%02.5f)"

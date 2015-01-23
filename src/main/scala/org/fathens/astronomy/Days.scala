@@ -13,6 +13,10 @@ object Days {
    */
   def from1980(date: Date) = jdn(date) - 2444238.5
   /**
+   * Base date for E. W. Brown's numbered series of lunations (1923 January 16)
+   */
+  val lunations_base = 2423436.0
+  /**
    * Days of one year
    */
   val one_year = 365.2422
