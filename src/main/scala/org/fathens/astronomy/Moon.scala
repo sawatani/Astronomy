@@ -1,7 +1,5 @@
 package org.fathens.astronomy
 
-import java.util.Date
-
 import org.fathens.math._
 
 object Moon {
@@ -42,10 +40,10 @@ object Moon {
    */
   val smaxis = Killometers(384401.0)
 }
-class Moon(date: Date) {
+class Moon(date: java.util.Date) {
   import Moon._
 
-  val sun = Sun(date)
+  val sun = new Sun(date)
 
   val days_from_epoch = Days from1980 date
   /**

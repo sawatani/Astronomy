@@ -24,16 +24,16 @@ object Sun {
    */
   val sun_angular_size_smaxis = Radians(0.00930483893457233)
 
-  def apply(date: java.util.Date) = {
+}
+class Sun(date: java.util.Date) {
+  import Sun._
+
+  val mean_anomaly_perigee = {
     val day = Days from1980 date
     val N = day * Pi2 / Days.one_year
     // Convert from perigee coordinates to epoch 1980
-    new Sun(N + ecliptic_longitude_epoch - ecliptic_longitude_perigee)
+    N + ecliptic_longitude_epoch - ecliptic_longitude_perigee
   }
-}
-class Sun(val mean_anomaly_perigee: Degrees) {
-  import Sun._
-
   val true_anomaly = {
     // Eccentric anomaly
     val a = Equations.kepler(mean_anomaly_perigee, eccentricity)
