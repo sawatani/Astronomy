@@ -45,7 +45,7 @@ class Sun(val mean_anomaly_perigee: Degrees) extends LazyLogging {
 
   val (distance, angular_diameter) = {
     // Orbital distance factor
-    val F = ((1 + eccentricity * cos(true_anomaly)) / (1 - (eccentricity ^ 2)))
+    val F = (1 + eccentricity * cos(true_anomaly)) / (1 - (eccentricity ^ 2))
     (sun_smaxis / F, F * sun_angular_size_smaxis)
   }
 
