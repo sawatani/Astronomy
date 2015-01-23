@@ -3,9 +3,11 @@ package org.fathens.moon
 import java.util.Date
 
 import org.scalacheck._
+import org.specs2._
+import org.specs2.matcher._
 import org.fathens.math._
 
-object MoonPhaseSpec extends SpecificationExt {
+object MoonPhaseSpec extends Specification with DataTables with ScalaCheck {
   def is = s2"""
   Examples of moon phase (at 2015-01-01 - 2015-01-31)    $phases
     
@@ -19,7 +21,17 @@ object MoonPhaseSpec extends SpecificationExt {
   Illuminated is depend on phase                         $ip
 """
 
-  implicit val precision = Precision(5e-6)
+  /**
+   * Extend Double Matchers
+   */
+  implicit class MoreDouble(a: Double) {
+    def must_=~(b: Double)(implicit p: SignificantFigures) = a must beCloseTo(b, p)
+  }
+  implicit val precision = SignificantFigures(6)
+  /**
+   * Date Generator
+   */
+  val genDate = Gen.choose(0, new java.util.Date().getTime * 2).map(new java.util.Date(_))
 
   def fa01 = prop { (d: Double) =>
     MoonPhase.circle(Radians(d)).value must beBetween(0.0, 2 * Pi.value).excludingEnd
@@ -59,7 +71,7 @@ object MoonPhaseSpec extends SpecificationExt {
       26.68121 ! "2015-01-18T00:00:00.000Z" |
       27.76843 ! "2015-01-19T00:00:00.000Z" |
       28.88772 ! "2015-01-20T00:00:00.000Z" |
-      00.49883 ! "2015-01-21T00:00:00.000Z" |
+      4.98833e-1 ! "2015-01-21T00:00:00.000Z" |
       01.65043 ! "2015-01-22T00:00:00.000Z" |
       02.79857 ! "2015-01-23T00:00:00.000Z" |
       03.93137 ! "2015-01-24T00:00:00.000Z" |

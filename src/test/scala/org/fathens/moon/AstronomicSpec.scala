@@ -3,9 +3,11 @@ package org.fathens.moon
 import java.util.Date
 
 import org.scalacheck._
+import org.specs2._
+import org.specs2.matcher._
 import org.fathens.math._
 
-object AstronomicSpec extends SpecificationExt {
+object AstronomicSpec extends Specification with DataTables with ScalaCheck {
   def is = s2"""
 
   Julian Days Number
@@ -19,8 +21,18 @@ object AstronomicSpec extends SpecificationExt {
   Example of solutions (at 2015-01-01 - 2015-01-31) $kepler
   """
 
-  implicit val precision = Precision(5e-6)
-
+  /**
+   * Extend Double Matchers
+   */
+  implicit class MoreDouble(a: Double) {
+    def must_=~(b: Double)(implicit p: SignificantFigures) = a must beCloseTo(b, p)
+  }
+  implicit val precision = SignificantFigures(6)
+  /**
+   * Date Generator
+   */
+  val genDate = Gen.choose(0, new java.util.Date().getTime * 2).map(new java.util.Date(_))
+  
   def ed01 = Astronomic.Days.from1980(Astronomic.Days.iso8601 parse "1980-01-01T00:00:00.000Z") must_== 1
   def ed02 =
     "date" | "jdn" |
@@ -42,35 +54,35 @@ object AstronomicSpec extends SpecificationExt {
     "x" | "y" |
       358.23110 ! 6.25179 |
       359.21675 ! 6.26928 |
-      0.20240 ! 0.00359 |
-      1.18804 ! 0.02109 |
-      2.17369 ! 0.03858 |
-      3.15934 ! 0.05608 |
-      4.14499 ! 0.07357 |
-      5.13063 ! 0.09107 |
-      6.11628 ! 0.10856 |
-      7.10193 ! 0.12605 |
-      8.08757 ! 0.14355 |
-      9.07322 ! 0.16104 |
-      10.05887 ! 0.17853 |
-      11.04452 ! 0.19602 |
-      12.03016 ! 0.21351 |
-      13.01581 ! 0.23100 |
-      14.00146 ! 0.24848 |
-      14.98711 ! 0.26597 |
-      15.97275 ! 0.28345 |
-      16.95840 ! 0.30094 |
-      17.94405 ! 0.31842 |
-      18.92970 ! 0.33590 |
-      19.91534 ! 0.35337 |
-      20.90099 ! 0.37085 |
-      21.88664 ! 0.38832 |
-      22.87228 ! 0.40580 |
-      23.85793 ! 0.42327 |
-      24.84358 ! 0.44073 |
-      25.82923 ! 0.45820 |
-      26.81487 ! 0.47566 |
-      27.80052 ! 0.49312 |> {
+      0.20240 ! 3.59261e-3 |
+      1.18804 ! 2.10877e-2 |
+      2.17369 ! 3.85829e-2 |
+      3.15934 ! 5.60779e-2 |
+      4.14499 ! 7.35726e-2 |
+      5.13063 ! 9.10667e-2 |
+      6.11628 ! 1.08561e-1 |
+      7.10193 ! 1.26054e-1 |
+      8.08757 ! 1.43546e-1 |
+      9.07322 ! 1.61038e-1 |
+      10.05887 ! 1.78529e-1 |
+      11.04452 ! 1.96019e-1 |
+      12.03016 ! 2.13508e-1 |
+      13.01581 ! 2.30996e-1 |
+      14.00146 ! 2.48483e-1 |
+      14.98711 ! 2.65969e-1 |
+      15.97275 ! 2.83453e-1 |
+      16.95840 ! 3.00935e-1 |
+      17.94405 ! 3.18417e-1 |
+      18.92970 ! 3.35896e-1 |
+      19.91534 ! 3.53374e-1 |
+      20.90099 ! 3.70850e-1 |
+      21.88664 ! 3.88324e-1 |
+      22.87228 ! 4.05796e-1 |
+      23.85793 ! 4.23266e-1 |
+      24.84358 ! 4.40734e-1 |
+      25.82923 ! 4.58200e-1 |
+      26.81487 ! 4.75663e-1 |
+      27.80052 ! 4.93125e-1 |> {
         (x, y) => Astronomic.kepler(Degrees(x), Astronomic.eccentricity).value must_=~ y
       }
 }
