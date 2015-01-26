@@ -20,7 +20,7 @@ object MoonSpec extends Specification with DataTables with ScalaCheck {
   implicit class MoreDouble(a: Double) {
     def must_=~(b: Double)(implicit p: SignificantFigures) = a must beCloseTo(b, p)
   }
-  implicit val precision = SignificantFigures(6)
+  implicit val precision = SignificantFigures(5)
   /**
    * Date Generator
    */

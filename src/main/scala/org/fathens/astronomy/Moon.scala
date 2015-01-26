@@ -7,6 +7,10 @@ object Moon {
    * Synodic month (new Moon to new Moon), in days
    */
   val synodic_month = 29.53058868
+  /**
+   * Orbital period of Moon
+   */
+  val orbital_days = 27.321582
 
   /**
    * (Elements of the Moon's orbit, epoch 1980.0)
@@ -49,7 +53,7 @@ class Moon(date: java.util.Date) {
   /**
    * Mean longitude
    */
-  lazy val mean_longitude = Degrees(13.1763966) * days_from_epoch + mean_longitude_epoch
+  lazy val mean_longitude = Pi2 / orbital_days * days_from_epoch + mean_longitude_epoch
   /**
    * Mean anomaly
    */
