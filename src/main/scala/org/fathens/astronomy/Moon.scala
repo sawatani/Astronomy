@@ -44,7 +44,7 @@ object Moon {
    */
   val smaxis = Killometers(384401.0)
 }
-class Moon(date: java.util.Date) {
+class Moon(val date: java.util.Date) {
   import Moon._
 
   lazy val sun = new Sun(date)

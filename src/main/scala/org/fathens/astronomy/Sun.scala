@@ -25,7 +25,7 @@ object Sun {
   val sun_angular_size_smaxis = Radians(0.00930483893457233)
 
 }
-class Sun(date: java.util.Date) {
+class Sun(val date: java.util.Date) {
   import Sun._
 
   lazy val mean_anomaly_perigee = {
