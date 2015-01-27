@@ -14,7 +14,7 @@ object Equations {
     def solve(e: Radians): Radians = {
       val delta = e - m - Radians(ecc * sin(e))
       val next = e - delta / (1.0 - ecc * cos(e))
-      if (delta.abs.value <= epsilon) next
+      if (delta.abs.toDouble <= epsilon) next
       else solve(next)
     }
     solve(m)
