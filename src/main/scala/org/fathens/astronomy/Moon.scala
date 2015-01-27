@@ -66,7 +66,7 @@ class Moon(val date: java.util.Date) {
       evection - Degrees(0.1858) * sin(sun.mean_anomaly_perigee)
     }
     val mp = mean_anomaly + ml - Degrees(0.37) * sin(sun.mean_anomaly_perigee)
-    // Correction for the equation of the centre
+    // Moon's equation of the center
     val ec = Degrees(6.2886) * sin(mp)
 
     // Corrected longitude
@@ -89,15 +89,18 @@ class Moon(val date: java.util.Date) {
     )
   }
 
-  lazy val rotation = true_longitude - sun.ecliptic_longitude
+  /**
+   * Angular of Sun and Moon 
+   */
+  lazy val angular_from_sun = true_longitude - sun.ecliptic_longitude
   /**
    * The terminator phase angle as a percentage of a full circle (i.e., 0 to 1)
    */
-  lazy val phase = rotation.normalize / Pi2
+  lazy val phase = angular_from_sun.normalize / Pi2
   /**
    * The illuminated fraction of the Moon's disc
    */
-  lazy val illuminated = (1 - cos(rotation)) / 2.0
+  lazy val illuminated = (1 - cos(angular_from_sun)) / 2.0
   /**
    * Age of the Moon, in degrees
    */
@@ -110,6 +113,11 @@ class Moon(val date: java.util.Date) {
    * Moon's angular diameter
    */
   lazy val angular_diameter = smaxis / distance * angular_size
+
+  /**
+   * Longitude of earth
+   */
+  lazy val earth_longitude: Degrees = (angular_from_sun - Pi2 * (Days.jdn(date) % 1)).normalize
 
   override def toString = {
     f"MoonPhase(illuminated: ${illuminated * 100}%3.5f%%, age: ${age}%02.5f)"
