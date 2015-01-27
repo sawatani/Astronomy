@@ -4,10 +4,11 @@ import java.awt.image.BufferedImage
 import java.nio.file.{Path, Paths}
 
 import javax.imageio.ImageIO
+import com.typesafe.scalalogging.LazyLogging
 
-object MoonImage extends App with Logging {
+object MoonImage extends App with LazyLogging {
   val max = 28
-  Log warn f"Arguments: ${args mkString ", "}"
+  logger warn f"Arguments: ${args mkString ", "}"
   args.toList match {
     case r :: target :: phase :: Nil => save(makeImage(r.toInt, phase.toInt), Paths get target)
     case r :: dir :: Nil => (0 until max).foreach { phase =>
@@ -18,13 +19,13 @@ object MoonImage extends App with Logging {
       }
       save(makeImage(r.toInt, phase), target)
     }
-    case _ => Log fatal "Artguments are miss match"
+    case _ => logger error "Artguments are miss match"
   }
 
   def save(image: BufferedImage, file: Path) {
     val name = file.getFileName.toFile.getName
     val ext = if (name contains '.') name.reverse.takeWhile(_ != '.').reverse else "png"
-    Log info f"Writing image(${ext}) to ${file}"
+    logger info f"Writing image(${ext}) to ${file}"
     file.getParent.toFile.mkdirs
     ImageIO.write(image, ext, file.toFile)
   }
@@ -42,7 +43,7 @@ object MoonImage extends App with Logging {
         case Some(false) => Array(0, 0, 0, 255)
         case Some(true)  => Array(255, 255, 0, 255)
       }
-      Log trace f"Phase: ${phase}: Pixel(${x}, ${y}) = ${rgba mkString ", "}"
+      logger trace f"Phase: ${phase}: Pixel(${x}, ${y}) = ${rgba mkString ", "}"
       raster.setPixel(x + r, y + r, rgba)
     }
     image
