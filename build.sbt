@@ -2,7 +2,7 @@ name := "Astronomy"
 
 organization := "org.fathens"
 
-version := "1.1.0"
+version := "1.1.1"
 
 scalaVersion := "2.11.5"
 
@@ -16,7 +16,7 @@ scalacOptions ++= Seq(
 scalacOptions in Test ++= Seq("-Yrangepos")
 
 libraryDependencies ++= Seq(
-  "org.fathens" %% "math-core" % "0.1.0",
+  "org.fathens" %% "math-core" % "0.1.2",
   "org.specs2" %% "specs2-scalacheck" % "2.4.15" % "test" withSources,
   "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0"
 )

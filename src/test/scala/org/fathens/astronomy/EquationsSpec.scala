@@ -54,6 +54,6 @@ object EquationsSpec extends Specification with DataTables with ScalaCheck {
       25.82923 ! 4.58200e-1 |
       26.81487 ! 4.75663e-1 |
       27.80052 ! 4.93125e-1 |> {
-        (x, y) => Equations.kepler(Degrees(x), Sun.eccentricity).value must_=~ y
+        (x, y) => Equations.kepler(Degrees(x), Sun.eccentricity).toDouble must_=~ y
       }
 }
