@@ -78,14 +78,14 @@ class Moon(val date: java.util.Date) {
 
   lazy val (ecliptic_latitude, ecliptic_longitude) = {
     // Corrected longitude of the node
-    val NP = {
+    val np = {
       // Moon's ascending node mean longitude
-      val MN = node_mean_longitude_epoch - Degrees(0.0529539) * days_from_epoch
-      MN - Degrees(0.16) * sin(sun.mean_anomaly_perigee)
+      val mn = node_mean_longitude_epoch - Degrees(0.0529539) * days_from_epoch
+      mn - Degrees(0.16) * sin(sun.mean_anomaly_perigee)
     }
     (
-      asin(sin(true_longitude - NP) * sin(inclination)), // Ecliptic Latitude
-      atan2(sin(true_longitude - NP) * cos(inclination), cos(true_longitude - NP)) + NP // Ecliptic Longitude
+      asin(sin(true_longitude - np) * sin(inclination)), // Ecliptic Latitude
+      atan2(sin(true_longitude - np) * cos(inclination), cos(true_longitude - np)) + np // Ecliptic Longitude
     )
   }
 
