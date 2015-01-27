@@ -32,7 +32,7 @@ class Sun(val date: java.util.Date) {
     val day = Days from1980 date
     val N = day * Pi2 / Days.one_year
     // Convert from perigee coordinates to epoch 1980
-    N + ecliptic_longitude_epoch - ecliptic_longitude_perigee
+    ecliptic_longitude_epoch + N - ecliptic_longitude_perigee
   }
   lazy val true_anomaly = {
     // Eccentric anomaly
@@ -50,5 +50,5 @@ class Sun(val date: java.util.Date) {
   /**
    * Geocentric ecliptic longitude
    */
-  lazy val ecliptic_longitude = true_anomaly + ecliptic_longitude_perigee
+  lazy val ecliptic_longitude = ecliptic_longitude_perigee + true_anomaly 
 }

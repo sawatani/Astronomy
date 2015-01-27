@@ -53,7 +53,7 @@ class Moon(val date: java.util.Date) {
   /**
    * Mean longitude
    */
-  lazy val mean_longitude = Pi2 / orbital_days * days_from_epoch + mean_longitude_epoch
+  lazy val mean_longitude = mean_longitude_epoch + Pi2 / orbital_days * days_from_epoch
   /**
    * Mean anomaly
    */
