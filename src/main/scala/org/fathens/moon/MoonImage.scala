@@ -7,7 +7,7 @@ import javax.imageio.ImageIO
 import com.typesafe.scalalogging.LazyLogging
 
 object MoonImage extends App with LazyLogging {
-  val max = 28
+  val max = 30
   logger warn f"Arguments: ${args mkString ", "}"
   args.toList match {
     case r :: target :: phase :: Nil => save(makeImage(r.toInt, phase.toInt), Paths get target)
