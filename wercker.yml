@@ -2,10 +2,6 @@ box: sawatani/sbt_java8@0.1.0
 build:
     steps:
         - script:
-            name: check java
-            code: |-
-                java -version
-        - script:
             name: test
             code: |-
                 sbt test
