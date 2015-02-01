@@ -4,6 +4,8 @@ build:
         - script:
             name: test
             code: |-
+                env | sort
+                java -version
                 sbt test
 deploy:
     steps:
