@@ -2,9 +2,13 @@ box: takebayashi/sbt@0.13.6-0.0.1
 build:
     steps:
         - script:
+            name: check java
+            code: |-
+                ls -la /usr/lib/jvm/open-jdk
+                java -version
+        - script:
             name: test
             code: |-
-                java -version
                 sbt test
 deploy:
     steps:
