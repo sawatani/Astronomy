@@ -4,8 +4,8 @@ build:
         - script:
             name: check java
             code: |-
-                ls -la /usr/lib/jvm/open-jdk
                 java -version
+                sudo update-alternatives --config java
         - script:
             name: test
             code: |-
