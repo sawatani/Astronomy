@@ -2,7 +2,7 @@ name := "Astronomy"
 
 organization := "org.fathens"
 
-version := "1.1.3-SNAPSHOT"
+version := "1.1.3"
 
 scalaVersion := "2.11.5"
 
