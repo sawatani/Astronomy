@@ -16,7 +16,7 @@ scalacOptions ++= Seq(
 scalacOptions in Test ++= Seq("-Yrangepos")
 
 libraryDependencies ++= Seq(
-  "org.fathens" %% "math-core" % "0.1.2",
+  "org.fathens" %% "math-core" % "0.1.3",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0",
   "org.specs2" %% "specs2-scalacheck" % "2.4.15" % "test"
 )
